@@ -2,7 +2,8 @@
 #include <fstream>
 #include <list>
 #include <sstream>
-#include <algorithm>
+
+using namespace std;
 
 const size_t BUCKET_SIZE = 16;
 
@@ -16,100 +17,101 @@ size_t hashFunction(int key) {
     return key % BUCKET_SIZE;
 }
 
+// 해시 테이블
+list<HashEntry> hashTable[BUCKET_SIZE];
+
 // 해시 테이블 초기화
-void initializeHashTable(std::list<HashEntry> hashTable[]) {
+void initializeHashTable() {
     for (size_t i = 0; i < BUCKET_SIZE; ++i) {
         hashTable[i].clear();
     }
 }
 
 // 해시 테이블에 키-값 쌍 추가
-void insert(int key, std::list<HashEntry> hashTable[]) {
+void insert(int key) {
     size_t index = hashFunction(key);
     auto& bucket = hashTable[index];
 
-    auto it = std::find_if(bucket.begin(), bucket.end(), [key](const HashEntry& entry) {
-        return entry.key == key;
-    });
+    for (const auto& entry : bucket) {
+        if (entry.key == key) {
+            cerr << "Duplicate key: " << key << endl;
+            return;
+        }
+    }
 
-    if (it == bucket.end() && bucket.size() < BUCKET_SIZE) {
+    if (bucket.size() < BUCKET_SIZE) {
         bucket.push_back({ key });
-    } else if (it != bucket.end()) {
-        std::cerr << "Duplicate key: " << key << std::endl;
     } else {
-        std::cerr << "Overflow: Unable to insert key " << key << std::endl;
+        cerr << "Overflow: Unable to insert key " << key << endl;
     }
 }
 
 // 해시 테이블에서 특정 키에 해당하는 값을 삭제
-void remove(int key, std::list<HashEntry> hashTable[]) {
+void remove(int key) {
     size_t index = hashFunction(key);
     auto& bucket = hashTable[index];
 
-    auto it = std::find_if(bucket.begin(), bucket.end(), [key](const HashEntry& entry) {
-        return entry.key == key;
-    });
-
-    if (it != bucket.end()) {
-        bucket.erase(it);
-    } else {
-        std::cerr << "Key " << key << " not found" << std::endl;
+    for (auto it = bucket.begin(); it != bucket.end(); ++it) {
+        if (it->key == key) {
+            bucket.erase(it);
+            return;
+        }
     }
+
+    cerr << "Key " << key << " not found" << endl;
 }
 
 // 해시 테이블 출력
-void display(std::list<HashEntry> hashTable[]) {
+void display() {
     for (size_t i = 0; i < BUCKET_SIZE; ++i) {
-        std::cout << i << ": ";
+        cout << i << ": ";
 
         for (const auto& entry : hashTable[i]) {
-            std::cout << entry.key << ", ";
+            cout << entry.key << ", ";
         }
 
         if (hashTable[i].empty()) {
-            std::cout << "-1";
+            cout << "-1";
         }
 
-        std::cout << std::endl;
+        cout << endl;
     }
 }
 
 int main() {
-    std::ifstream inputFile("hash_cmd.txt");
+    ifstream inputFile("commands.txt");
 
-    std::list<HashEntry> hashTable[BUCKET_SIZE];
-
-    initializeHashTable(hashTable);
+    initializeHashTable();
 
     if (inputFile.is_open()) {
-        std::string line;
-        while (std::getline(inputFile, line)) {
-            std::istringstream iss(line);
+        string line;
+        while (getline(inputFile, line)) {
+            istringstream iss(line);
             char command;
             int key;
 
             if (iss >> command >> key) {
                 switch (command) {
                     case 'i':
-                        insert(key, hashTable);
+                        insert(key);
                         break;
                     case 'r':
-                        remove(key, hashTable);
+                        remove(key);
                         break;
                     default:
-                        std::cerr << "Invalid command: " << command << std::endl;
+                        cerr << "Invalid command: " << command << endl;
                         break;
                 }
             } else {
-                std::cerr << "Error parsing input line: " << line << std::endl;
+                cerr << "Error parsing input line: " << line << endl;
             }
         }
 
-        display(hashTable);
+        display();
 
         inputFile.close();
     } else {
-        std::cerr << "Unable to open input file." << std::endl;
+        cerr << "Unable to open input file." << endl;
     }
 
     return 0;
