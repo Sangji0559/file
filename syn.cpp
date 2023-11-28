@@ -1,30 +1,14 @@
 #include<iostream>
 #include<fstream>
-#include<vector>
-#include<list>
-#include<algorithm>
 
-using namespace std;
-struct node{
-    int key = -1;
-    int next = -1;
+struct Node {
+	int data;
+	struct Node* next;
 };
-node table[32];
 
-int check_full(){ // 남은 bucket이 존재하는 지 
-    for(int i = 16; i++){
-        if(table[i].key==-1) return i; // 존재하면 index 리턴
-    }
-    return -1; // 없으면 -1 리턴
-}
-
-void insert_key(int mod, int key){
-    // mod에 따라서 저장 방법 다르게
-    // mod()
-}
-
-void remove_key(int mod, int key){
-
+class LinkedList{
+	private:
+		
 }
 
 int main() {
