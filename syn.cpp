@@ -52,7 +52,7 @@ int main() {
 	fstream output("result.txt", ios::out); // result.txt에 데이터 출력
 	
 	char c; // insert, remove 구분
-	int temp // key 값 임시 저장
+	int temp; // key 값 임시 저장
 	
 	while (!input.eof()) { // hash_cmd.txt의 데이터가 있을 경우
 		input.get(c); // 앞의 문자 하나 가져오기
@@ -68,7 +68,7 @@ int main() {
 	for (size_t i = 0; i < 16; ++i) { // 파일에 데이터 출력
     	output << i << ":";
         for (const auto& entry : table[i]) { // table에 대해 값이 존재하면
-            output << entry.key << ", ";  
+            output << entry.key << ",";  
         }
         if (table[i].empty()) { // 비어있으면 -1, 출력
             output << "-1,";
