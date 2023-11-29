@@ -66,13 +66,17 @@ int main() {
     }
 	for (size_t i = 0; i < 16; ++i) { // 파일에 데이터 출력
     	output << i << ":";
+		cout << i << ":";
         for (const auto& entry : table[i]) { // table에 대해 값이 존재하면
-            output << entry.key << ",";  
+            output << entry.key << ","; 
+            cout << entry.key << ",";  
         }
         if (table[i].empty()) { // 비어있으면 -1, 출력
             output << "-1,";
+            cout << "-1,";
         }
         output << "\n";
+		cout << "\n";
     }
 	
 	input.close(); // 파일 닫기
